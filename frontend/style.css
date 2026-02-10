@@ -54,9 +54,10 @@ body {
 /* ==================== App Frame ==================== */
 .single-chat-app {
   min-height: 100vh;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* center horizontally */
+  justify-content: flex-start;
   padding: 16px;
   animation: pageIn 420ms cubic-bezier(.2,.8,.2,1) both;
 }
@@ -74,7 +75,7 @@ body {
 
 /* ==================== Chat Panel ==================== */
 .chat-panel {
-  width: min(1200px, 95%);
+  width: min(1100px, 96%);
   height: min(82vh, 780px); /* bigger chat area */
   display: grid;
   grid-template-rows: auto 1fr auto;
