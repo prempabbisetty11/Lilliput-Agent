@@ -1,5 +1,5 @@
 // ---- Config ----
-let API_BASE = window.location.origin; // change this to your deployed URL later
+let API_BASE = "https://lilliput-agent.onrender.com"; // change this to your deployed URL later
 const chatEl = document.getElementById("chat");
 const inputEl = document.getElementById("msg");
 const sendBtn = document.getElementById("sendBtn");
