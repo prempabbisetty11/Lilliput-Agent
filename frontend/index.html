@@ -11,12 +11,11 @@
   <div class="single-chat-app">
     <header class="topbar">
       <div class="topbar-left">
-        <h1>Chat</h1>
+        <h1>Lilliput Chat</h1>
         <span class="workspace-tag">Lilliput Agent</span>
       </div>
       <div class="topbar-right">
-        <button class="icon-btn" title="Notifications">🔔</button>
-        <button class="icon-btn" title="Help">❓</button>
+        <button class="icon-btn" id="themeToggle" title="Toggle theme">🌗</button>
       </div>
     </header>
 
@@ -29,12 +28,11 @@
           </div>
           <div class="chat-actions">
             <button class="icon-btn" id="clearBtn" title="Clear chat">🗑️</button>
-            <button class="icon-btn" title="Export">⬇️</button>
           </div>
         </div>
 
         <!-- Messages -->
-        <div id="chat" class="chat-body">
+        <div id="chat" class="chat-body chat-stream">
           <!-- Messages injected by script.js -->
         </div>
 
