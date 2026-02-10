@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lilliput Agent</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <header class="header">
+      <h1>🤖 Lilliput Agent</h1>
+      <p class="subtitle">Chat with your AI assistant (text or voice)</p>
+    </header>
+
+    <!-- Chat area -->
+    <section id="chat" class="chat"></section>
+
+    <!-- Composer -->
+    <footer class="composer">
+      <input
+        id="msg"
+        type="text"
+        placeholder="Type something and press Enter…"
+        autocomplete="off"
+      />
+      <div class="actions">
+        <button id="sendBtn" onclick="send()">Send</button>
+        <button id="voiceBtn" onclick="startVoice()" title="Speak">🎤</button>
+        <button id="muteBtn" onclick="toggleMute()" title="Mute / Unmute">🔊</button>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Load script after DOM is ready -->
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+# OS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual env
+.venv/
+venv/
+env/
+
+# Secrets
+.env
+.env.*
+
+# ADK / runtime
+.adk/
+*.db
+
+# Logs
+*.log
+
+# Editor
+.vscode/
+.idea/

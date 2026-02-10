@@ -1,0 +1,242 @@
+/* -------------------- Reset & Base -------------------- */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+
+:root {
+  --bg: #05060a;            /* deep black */
+  --panel: rgba(20, 22, 30, 0.55);
+  --panel-strong: rgba(20, 22, 30, 0.75);
+  --glass-border: rgba(255,255,255,0.12);
+  --text: #e9ecf1;
+  --muted: #a8b0c3;
+  --accent: #7aa2ff;        /* subtle blue accent */
+  --accent-2: #9b7bff;      /* purple tint for gradients */
+  --success: #4f7cff;
+  --danger: #ff6b6b;
+  --radius-lg: 18px;
+  --radius-md: 14px;
+}
+
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(1200px 700px at 10% -10%, rgba(122,162,255,0.15), transparent 40%),
+    radial-gradient(900px 600px at 90% 10%, rgba(155,123,255,0.12), transparent 45%),
+    linear-gradient(180deg, #07080f 0%, #05060a 100%);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* -------------------- App Shell -------------------- */
+.app {
+  max-width: 920px;
+  margin: 0 auto;
+  height: 100vh;            /* constrain height so the middle row can scroll */
+  min-height: 100dvh;       /* mobile-friendly dynamic viewport */
+  display: grid;
+  grid-template-rows: auto 1fr auto; /* header | chat | composer */
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* -------------------- Header (Liquid Glass) -------------------- */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 14px 16px 10px;
+  background: linear-gradient(180deg, rgba(10,12,18,0.75), rgba(10,12,18,0.55));
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.subtitle {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* -------------------- Chat Area -------------------- */
+.chat {
+  padding: 14px 14px 10px;
+  overflow-y: auto;         /* enable vertical scrolling */
+  min-height: 0;            /* allow the grid item to shrink and scroll */
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch; /* smooth iOS scrolling */
+}
+
+/* Message entrance animation (soft, human) */
+@keyframes floatIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.msg {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0;
+  animation: floatIn 220ms cubic-bezier(.2,.8,.2,1) both;
+}
+
+.msg .meta {
+  font-size: 11px;
+  opacity: 0.65;
+  margin-bottom: 4px;
+}
+
+/* Glass bubble base */
+.msg .bubble {
+  max-width: 78%;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  line-height: 1.45;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+/* User (right) */
+.msg.you { align-items: flex-end; }
+.msg.you .bubble {
+  background: linear-gradient(135deg, rgba(122,162,255,0.35), rgba(155,123,255,0.25));
+  color: #0b1020;
+  border-bottom-right-radius: 6px;
+}
+
+/* Agent (left) */
+.msg.agent { align-items: flex-start; }
+.msg.agent .bubble {
+  background: linear-gradient(180deg, rgba(30,34,48,0.75), rgba(20,24,36,0.65));
+  color: var(--text);
+  border-bottom-left-radius: 6px;
+}
+
+/* Error */
+.msg.error { align-items: center; }
+.msg.error .bubble {
+  background: linear-gradient(180deg, rgba(255,107,107,0.35), rgba(255,107,107,0.20));
+  color: #120505;
+}
+
+/* Typing indicator */
+.typing {
+  margin: 10px 0 4px;
+  font-size: 13px;
+  color: var(--muted);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* -------------------- Composer (Liquid Glass) -------------------- */
+.composer {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  padding: 10px 10px calc(12px + env(safe-area-inset-bottom));
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  background: linear-gradient(180deg, rgba(10,12,18,0.55), rgba(10,12,18,0.75));
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  border-top: 1px solid var(--glass-border);
+}
+
+#msg {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--glass-border);
+  background: rgba(255,255,255,0.06);
+  color: var(--text);
+  outline: none;
+  font-size: 16px; /* prevents iOS zoom */
+  transition: box-shadow 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+#msg::placeholder { color: var(--muted); }
+
+#msg:focus {
+  border-color: rgba(122,162,255,0.6);
+  box-shadow: 0 0 0 3px rgba(122,162,255,0.18);
+  background: rgba(255,255,255,0.08);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Buttons (glass pills) */
+button {
+  min-height: 44px; /* good touch target */
+  padding: 10px 12px;
+  border-radius: 999px; /* pill */
+  border: 1px solid var(--glass-border);
+  background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
+  color: var(--text);
+  cursor: pointer;
+  backdrop-filter: blur(10px) saturate(120%);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.10);
+  transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+}
+
+button:hover { transform: translateY(-1px); box-shadow: 0 12px 28px rgba(0,0,0,0.45); }
+button:active { transform: translateY(0); box-shadow: 0 8px 22px rgba(0,0,0,0.35); }
+button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+#sendBtn {
+  background: linear-gradient(135deg, rgba(122,162,255,0.9), rgba(155,123,255,0.9));
+  color: #0b1020;
+  border-color: rgba(255,255,255,0.35);
+}
+
+#voiceBtn, #muteBtn { min-width: 44px; }
+
+/* -------------------- Scrollbar (WebKit) -------------------- */
+.chat::-webkit-scrollbar { width: 10px; }
+.chat::-webkit-scrollbar-track { background: transparent; }
+.chat::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.16);
+  border-radius: 8px;
+}
+.chat::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.28); }
+
+/* -------------------- Small Phones -------------------- */
+@media (max-width: 480px) {
+  .header h1 { font-size: 18px; }
+  .subtitle { font-size: 12px; }
+  .msg .bubble { max-width: 94%; font-size: 15px; }
+  .composer { grid-template-columns: 1fr; }
+  .actions { justify-content: space-between; }
+  button { min-height: 48px; } /* bigger touch targets */
+}
+
+/* -------------------- Tablets -------------------- */
+@media (min-width: 481px) and (max-width: 900px) {
+  .msg .bubble { max-width: 86%; }
+}
+
+/* -------------------- Landscape Phones -------------------- */
+@media (max-height: 500px) and (orientation: landscape) {
+  .header { display: none; }
+  .composer { padding-top: 8px; }
+}
