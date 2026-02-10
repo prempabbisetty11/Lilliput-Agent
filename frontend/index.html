@@ -7,7 +7,7 @@
   <meta name="description" content="Lilliput Agent is a modern AI workspace with chat and voice features." />
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body class="theme-dark">
   <div class="single-chat-app">
     <header class="topbar">
       <div class="topbar-left">
@@ -25,9 +25,6 @@
           <div class="chat-title">
             <strong>New Conversation</strong>
             <span class="status">Online</span>
-          </div>
-          <div class="chat-actions">
-            <button class="icon-btn" id="clearBtn" title="Clear chat">🗑️</button>
           </div>
         </div>
 
@@ -66,7 +63,6 @@
     // --- Simple Chat History (localStorage) ---
     const CHAT_KEY = "lilliput_chat_history_v1";
     const chatEl = document.getElementById("chat");
-    const clearBtn = document.getElementById("clearBtn");
 
     // Restore history on load
     document.addEventListener("DOMContentLoaded", () => {
@@ -93,14 +89,6 @@
       });
 
       observer.observe(chatEl, { childList: true, subtree: true, characterData: true });
-    }
-
-    // Clear chat + storage
-    if (clearBtn && chatEl) {
-      clearBtn.addEventListener("click", () => {
-        chatEl.innerHTML = "";
-        try { localStorage.removeItem(CHAT_KEY); } catch (e) {}
-      });
     }
   </script>
 </body>
