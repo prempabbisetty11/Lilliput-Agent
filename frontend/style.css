@@ -49,6 +49,7 @@ body {
     linear-gradient(180deg, var(--bg-2) 0%, var(--bg-1) 100%);
   -webkit-font-smoothing: antialiased;
   transition: background 500ms ease, color 300ms ease;
+  overflow: hidden; /* prevent page scrollbar from shifting layout */
 }
 
 /* ==================== App Frame ==================== */
@@ -60,6 +61,7 @@ body {
   justify-content: flex-start;
   padding: 16px;
   animation: pageIn 420ms cubic-bezier(.2,.8,.2,1) both;
+  width: 100%;
 }
 
 .topbar {
@@ -68,6 +70,7 @@ body {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 10px;
+  margin: 0 auto;
 }
 
 .topbar-left h1 { margin: 0; font-size: 24px; }
@@ -88,6 +91,7 @@ body {
   overflow: hidden;
   transition: box-shadow 300ms ease, transform 300ms ease, background 300ms ease;
   transform: translateZ(0);
+  margin: 0 auto; /* force horizontal centering at all times */
 }
 
 .chat-header {
