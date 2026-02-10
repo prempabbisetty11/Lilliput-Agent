@@ -3,36 +3,120 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lilliput Agent</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Lilliput Agent — AI Workspace</title>
+  <meta name="description" content="Lilliput Agent is a modern AI workspace with chat and voice features." />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <main class="app">
-    <header class="header">
-      <h1>🤖 Lilliput Agent</h1>
-      <p class="subtitle">Chat with your AI assistant (text or voice)</p>
-    </header>
-
-    <!-- Chat area -->
-    <section id="chat" class="chat"></section>
-
-    <!-- Composer -->
-    <footer class="composer">
-      <input
-        id="msg"
-        type="text"
-        placeholder="Type something and press Enter…"
-        autocomplete="off"
-      />
-      <div class="actions">
-        <button id="sendBtn" onclick="send()">Send</button>
-        <button id="voiceBtn" onclick="startVoice()" title="Speak">🎤</button>
-        <button id="muteBtn" onclick="toggleMute()" title="Mute / Unmute">🔊</button>
+  <div class="saas-app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">🤖</div>
+        <div class="brand-text">
+          <strong>Lilliput</strong>
+          <span>AI Workspace</span>
+        </div>
       </div>
-    </footer>
-  </main>
 
-  <!-- Load script after DOM is ready -->
+      <nav class="nav">
+        <button class="nav-item active">💬 Chat</button>
+        <button class="nav-item">🧠 Assistants</button>
+        <button class="nav-item">📁 Projects</button>
+        <button class="nav-item">📊 Analytics</button>
+        <button class="nav-item">⚙️ Settings</button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-card">
+          <div class="avatar">P</div>
+          <div class="user-meta">
+            <span class="name">You</span>
+            <span class="plan">Free Plan</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Area -->
+    <div class="main">
+      <!-- Top Bar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1>Chat</h1>
+          <span class="workspace-tag">Lilliput Agent</span>
+        </div>
+        <div class="topbar-right">
+          <button class="icon-btn" title="Notifications">🔔</button>
+          <button class="icon-btn" title="Help">❓</button>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <section class="workspace">
+        <!-- Chat Panel -->
+        <div class="chat-panel">
+          <div class="chat-header">
+            <div class="chat-title">
+              <strong>New Conversation</strong>
+              <span class="status">Online</span>
+            </div>
+            <div class="chat-actions">
+              <button class="icon-btn" title="Clear chat">🗑️</button>
+              <button class="icon-btn" title="Export">⬇️</button>
+            </div>
+          </div>
+
+          <!-- Messages -->
+          <div id="chat" class="chat-body">
+            <!-- Messages injected by script.js -->
+          </div>
+
+          <!-- Composer -->
+          <div class="chat-composer">
+            <div class="input-wrap">
+              <input
+                id="msg"
+                type="text"
+                placeholder="Type your message…"
+                autocomplete="off"
+              />
+            </div>
+            <div class="composer-actions">
+              <button class="btn secondary" id="voiceBtn" onclick="startVoice()" title="Speak">🎤</button>
+              <button class="btn secondary" id="muteBtn" onclick="toggleMute()" title="Mute / Unmute">🔊</button>
+              <button class="btn primary" id="sendBtn" onclick="send()">Send</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Panel (Context / Info) -->
+        <aside class="right-panel">
+          <div class="panel-card">
+            <h3>Assistant</h3>
+            <p>Lilliput Agent is your lightweight AI assistant for quick answers, brainstorming, and voice interactions.</p>
+          </div>
+
+          <div class="panel-card">
+            <h3>Tips</h3>
+            <ul>
+              <li>Use 🎤 to speak instead of typing</li>
+              <li>Use 🔊 to mute/unmute voice replies</li>
+              <li>Keep questions clear and concise</li>
+            </ul>
+          </div>
+
+          <div class="panel-card">
+            <h3>Status</h3>
+            <p><strong>Backend:</strong> Connected</p>
+            <p><strong>Mode:</strong> Chat + Voice</p>
+          </div>
+        </aside>
+      </section>
+    </div>
+  </div>
+
+  <!-- App Script -->
   <script src="script.js"></script>
 </body>
 </html>
