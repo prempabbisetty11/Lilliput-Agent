@@ -10,16 +10,13 @@ The app supports **text chat**, **voice input**, and **spoken responses**, and i
 - 💬 Real-time chat with an AI model (via Groq through `litellm`)
 - 🎤 Voice input using browser Speech Recognition
 - 🔊 Natural-sounding voice output using Speech Synthesis (auto-selects best available voice)
-- 📱 Responsive UI (mobile, tablet, desktop)
-- 🪟 Liquid glass / dark UI design
-- ⏳ Typing indicator, message timestamps, smooth animations
-- 🔐 API key handled via environment variables (no secrets in code)
-- 🚀 Ready for cloud deployment (e.g., Render)
-
+- 📱 Fully responsive UI (mobile, tablet, desktop)
+- 🪟 Modern liquid glass UI with smooth animations
+- 🖥️ Centered, wide SaaS-style chat layout (no sidebar)
+- ⏳ Typing indicator, message timestamps, smooth transitions
 - 💾 Persistent chat history (saved locally in the browser)
-- 🌗 Light / Dark theme toggle with smooth transitions
-- 🧑‍🤝‍🧑 Message bubble avatars (user & agent)
-- ✨ Shimmer "typing…" indicator and subtle message animations
+- 🔐 API key handled via environment variables (no secrets in code)
+- 🚀 Ready for cloud deployment (Frontend on Netlify, Backend on Render)
 
 ---
 
@@ -35,7 +32,7 @@ ADK_SERIES/
 │   └── script.js         # Frontend logic (chat, voice in/out)
 ├── google_agent/
 │   └── agent.py          # ADK agent (for CLI / experiments)
-└── README.md             # This file
+└── README.txt            # This file
 ```
 
 ---
@@ -50,7 +47,7 @@ ADK_SERIES/
 6. The UI displays the message and optionally speaks it aloud.
 
 7. The UI persists messages in the browser (localStorage) so chat history is restored on refresh.
-8. Users can toggle Light/Dark themes; the UI applies smooth transitions and glass effects in both modes.
+8. The interface uses a centered, wide chat layout with a glass-style design and smooth animations.
 
 ---
 
@@ -162,8 +159,8 @@ The chat history feature is stored in the user's browser (localStorage). This me
 
 ## 🤝 Notes
 
-- This project was built as a **learning + project showcase**.
-- AI tools were used in a **supporting role** (design ideas, debugging help, and code refinement), but the project structure and integration were done manually.
+- This project was built as a **learning + project showcase** and a small SaaS-style AI chat app.
+- AI tools were used in a **supporting role** (design ideas, debugging help, and code refinement), while the overall structure and integration were done manually.
 - API keys are **never** stored in the repository.
 
 ---
