@@ -119,6 +119,12 @@ uvicorn app:app --reload --app-dir backend
 
 This project is designed to be deployed on platforms like **Render**, **Railway**, or **Cloud Run**.
 
+This project uses **two separate services**:
+- 🌐 **Frontend (UI)** is hosted on **Netlify**
+- 🤖 **Backend (API)** is hosted on **Render**
+
+The frontend calls the backend API endpoint on Render; this split keeps the UI always online while the API handles AI requests.
+
 Typical steps:
 - Add a `requirements.txt`
 - Set `GROQ_API_KEY` in the platform’s environment variables
