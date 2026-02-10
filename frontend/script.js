@@ -68,6 +68,10 @@ function showTyping(show) {
 // ---- Main send ----
 async function send() {
   const msg = inputEl.value.trim();
+  // Stop any ongoing speech immediately when user sends a new message
+  if ("speechSynthesis" in window) {
+    speechSynthesis.cancel();
+  }
   if (!msg) return;
 
   // Save to local history (UI only)
@@ -108,6 +112,10 @@ async function send() {
 
 // ---- Voice input ----
 function startVoice() {
+  // Stop any ongoing speech before starting voice input
+  if ("speechSynthesis" in window) {
+    speechSynthesis.cancel();
+  }
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRecognition) {
     alert("Speech recognition is not supported in this browser.");
