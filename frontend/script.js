@@ -8,6 +8,9 @@ const sendBtn = document.getElementById("sendBtn");
 let isMuted = false; // for voice output
 let messages = [];  // local conversation history for UI
 
+let currentUtterance = null;
+let speakSeq = 0; // increments to invalidate old speech
+
 // Auto-focus input
 if (inputEl) inputEl.focus();
 
@@ -22,6 +25,13 @@ if (inputEl) {
 }
 
 // ---- Helpers ----
+function stopSpeaking() {
+  if ("speechSynthesis" in window) {
+    speechSynthesis.cancel();
+  }
+  currentUtterance = null;
+}
+
 function nowTime() {
   const d = new Date();
   return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -69,9 +79,8 @@ function showTyping(show) {
 async function send() {
   const msg = inputEl.value.trim();
   // Stop any ongoing speech immediately when user sends a new message
-  if ("speechSynthesis" in window) {
-    speechSynthesis.cancel();
-  }
+  stopSpeaking();
+  speakSeq++; // invalidate any in-flight speech
   if (!msg) return;
 
   // Save to local history (UI only)
@@ -113,9 +122,8 @@ async function send() {
 // ---- Voice input ----
 function startVoice() {
   // Stop any ongoing speech before starting voice input
-  if ("speechSynthesis" in window) {
-    speechSynthesis.cancel();
-  }
+  stopSpeaking();
+  speakSeq++; // invalidate any in-flight speech
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRecognition) {
     alert("Speech recognition is not supported in this browser.");
@@ -165,8 +173,11 @@ loadVoices();
 function speak(text) {
   if (!("speechSynthesis" in window)) return;
 
-  // Cancel any ongoing speech to avoid overlap
-  speechSynthesis.cancel();
+  // Invalidate any previous speech and stop it
+  stopSpeaking();
+
+  // Token to ensure only the latest call can speak
+  const mySeq = ++speakSeq;
 
   // Clean up text a bit for better pronunciation
   const cleaned = text.replace(/\*\*/g, "").replace(/\n+/g, ". ");
@@ -178,17 +189,25 @@ function speak(text) {
   }
 
   utterance.lang = selectedVoice?.lang || "en-US";
+  utterance.rate = 0.95;   // clearer
+  utterance.pitch = 1.0;
+  utterance.volume = 1.0;
 
-  // Slightly slower and clearer for better pronunciation
-  utterance.rate = 0.95;   // slower = clearer
-  utterance.pitch = 1.0;   // natural pitch
-  utterance.volume = 1.0;  // max volume
+  // If a newer speech was requested, do nothing
+  if (mySeq !== speakSeq) return;
 
-  // Fallback: if speech fails, retry once
+  currentUtterance = utterance;
+
+  utterance.onend = () => {
+    if (currentUtterance === utterance) {
+      currentUtterance = null;
+    }
+  };
+
   utterance.onerror = () => {
-    console.warn("Speech error, retrying once...");
-    speechSynthesis.cancel();
-    setTimeout(() => speechSynthesis.speak(utterance), 200);
+    if (currentUtterance === utterance) {
+      currentUtterance = null;
+    }
   };
 
   speechSynthesis.speak(utterance);
