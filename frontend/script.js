@@ -134,19 +134,20 @@ function startVoice() {
 // ---- Voice output ----
 let selectedVoice = null;
 
-// Load voices and pick a good one
+// Load voices and pick the best available human-like voice
 function loadVoices() {
   const voices = speechSynthesis.getVoices();
 
-  // Try to find a natural / human-like English voice
-  selectedVoice =
-    voices.find(v => v.name.toLowerCase().includes("google")) ||
-    voices.find(v => v.name.toLowerCase().includes("siri")) ||
-    voices.find(v => v.name.toLowerCase().includes("microsoft")) ||
-    voices.find(v => v.lang === "en-US") ||
-    voices[0];
+  if (!voices || !voices.length) return;
 
-  console.log("Selected voice:", selectedVoice?.name);
+  // Prefer high quality / neural / premium / branded voices
+  const preferred = voices.find(v => /neural|premium|google|microsoft|siri/i.test(v.name) && v.lang.startsWith("en"))
+    || voices.find(v => v.lang === "en-US")
+    || voices.find(v => v.lang.startsWith("en"))
+    || voices[0];
+
+  selectedVoice = preferred;
+  console.log("Selected voice:", selectedVoice?.name, selectedVoice?.lang);
 }
 
 // Some browsers load voices async
@@ -159,16 +160,28 @@ function speak(text) {
   // Cancel any ongoing speech to avoid overlap
   speechSynthesis.cancel();
 
-  const utterance = new SpeechSynthesisUtterance(text);
+  // Clean up text a bit for better pronunciation
+  const cleaned = text.replace(/\*\*/g, "").replace(/\n+/g, ". ");
+
+  const utterance = new SpeechSynthesisUtterance(cleaned);
 
   if (selectedVoice) {
     utterance.voice = selectedVoice;
   }
 
-  utterance.lang = "en-US";
-  utterance.rate = 1.0;   // 0.8 = slower, 1.0 = normal, 1.2 = faster
-  utterance.pitch = 1.0;  // 1.0 = normal human pitch
-  utterance.volume = 1.0; // Max volume
+  utterance.lang = selectedVoice?.lang || "en-US";
+
+  // Slightly slower and clearer for better pronunciation
+  utterance.rate = 0.95;   // slower = clearer
+  utterance.pitch = 1.0;   // natural pitch
+  utterance.volume = 1.0;  // max volume
+
+  // Fallback: if speech fails, retry once
+  utterance.onerror = () => {
+    console.warn("Speech error, retrying once...");
+    speechSynthesis.cancel();
+    setTimeout(() => speechSynthesis.speak(utterance), 200);
+  };
 
   speechSynthesis.speak(utterance);
 }
