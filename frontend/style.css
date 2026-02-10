@@ -11,17 +11,17 @@ html, body { height: 100%; margin: 0; }
 
 /* Dark (default) theme */
 body.theme-dark {
-  --bg-1: #0b1020;
-  --bg-2: #0e1a3a;
-  --panel: rgba(20, 28, 60, 0.55);
-  --panel-strong: rgba(20, 28, 60, 0.75);
-  --text: #eef1ff;
-  --muted: #b3b9ff;
-  --accent: #6ea8ff;
-  --accent-2: #9b8cff;
-  --you: linear-gradient(135deg, rgba(110,168,255,0.55), rgba(155,140,255,0.45));
-  --agent: linear-gradient(180deg, rgba(30,38,80,0.85), rgba(24,32,64,0.75));
-  --brand-glow: rgba(110,168,255,0.45);
+  --bg-1: #0b132b;        /* deep navy */
+  --bg-2: #0f1f3d;        /* blue-black */
+  --panel: rgba(18, 32, 66, 0.55);
+  --panel-strong: rgba(18, 32, 66, 0.75);
+  --text: #eef4ff;
+  --muted: #b8c6ff;
+  --accent: #4fc3f7;      /* sky blue */
+  --accent-2: #34d399;    /* soft green */
+  --you: linear-gradient(135deg, rgba(79,195,247,0.55), rgba(52,211,153,0.45));
+  --agent: linear-gradient(180deg, rgba(24,40,84,0.85), rgba(20,34,70,0.75));
+  --brand-glow: rgba(79,195,247,0.45);
 }
 
 /* Light theme */
@@ -43,8 +43,9 @@ body {
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
   color: var(--text);
   background:
-    radial-gradient(1200px 700px at 10% -10%, rgba(79,70,229,0.35), transparent 40%),
-    radial-gradient(900px 600px at 90% 10%, rgba(6,182,212,0.35), transparent 45%),
+    radial-gradient(1200px 700px at 15% -10%, rgba(79,195,247,0.35), transparent 45%),
+    radial-gradient(900px 600px at 85% 10%, rgba(52,211,153,0.25), transparent 45%),
+    radial-gradient(800px 500px at 50% 100%, rgba(99,102,241,0.20), transparent 60%),
     linear-gradient(180deg, var(--bg-2) 0%, var(--bg-1) 100%);
   -webkit-font-smoothing: antialiased;
   transition: background 500ms ease, color 300ms ease;
@@ -82,9 +83,10 @@ body {
   border-radius: var(--radius-lg);
   backdrop-filter: blur(16px) saturate(130%);
   -webkit-backdrop-filter: blur(16px) saturate(130%);
-  box-shadow: var(--shadow);
+  box-shadow: 0 30px 70px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.25);
   overflow: hidden;
   transition: box-shadow 300ms ease, transform 300ms ease, background 300ms ease;
+  transform: translateZ(0);
 }
 
 .chat-header {
@@ -99,6 +101,7 @@ body {
   padding: 16px;
   overflow-y: auto;
   scroll-behavior: smooth;
+  overscroll-behavior: contain;
 }
 
 /* ==================== Messages ==================== */
@@ -111,7 +114,7 @@ body {
 .msg .meta { font-size: 11px; opacity: 0.6; margin-bottom: 4px; }
 
 .msg .bubble {
-  max-width: 72%;
+  max-width: 70%;
   padding: 14px 16px;
   border-radius: var(--radius-md);
   line-height: 1.5;
@@ -121,6 +124,8 @@ body {
   -webkit-backdrop-filter: blur(12px) saturate(120%);
   box-shadow: var(--shadow);
   transition: transform 200ms ease, box-shadow 200ms ease;
+  word-wrap: break-word;
+  animation: bubbleIn 220ms cubic-bezier(.2,.8,.2,1) both;
 }
 
 .msg .bubble:hover { transform: translateY(-2px); }
@@ -130,6 +135,7 @@ body {
   background: var(--you);
   color: #0b1020;
   border-bottom-right-radius: 6px;
+  box-shadow: 0 10px 30px rgba(110,168,255,0.35);
 }
 
 .msg.agent { align-items: flex-start; }
@@ -137,6 +143,7 @@ body {
   background: var(--agent);
   color: var(--text);
   border-bottom-left-radius: 6px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
 }
 
 .msg.error { align-items: center; }
@@ -159,6 +166,11 @@ body {
   100% { background-position: 200% 50%; }
 }
 
+@keyframes bubbleIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 /* ==================== Composer ==================== */
 .chat-composer {
   display: grid; grid-template-columns: 1fr auto; gap: 10px;
@@ -170,7 +182,7 @@ body {
 #msg {
   width: 100%; padding: 14px 16px; border-radius: var(--radius-lg);
   border: 1px solid var(--glass-border);
-  background: rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.12);
   color: var(--text); outline: none; font-size: 16px;
 }
 #msg::placeholder { color: var(--muted); }
@@ -187,6 +199,13 @@ body {
 .btn.primary {
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
   color: #0b1020;
+  box-shadow: 0 10px 25px rgba(110,168,255,0.45);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.btn.primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 35px rgba(110,168,255,0.6);
 }
 
 /* ==================== Footer ==================== */

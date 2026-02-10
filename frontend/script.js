@@ -1,5 +1,6 @@
 // ---- Config ----
-let API_BASE = "https://lilliput-agent.onrender.com"; // change this to your deployed URL later
+// Use same-origin by default (works on Netlify/Render behind a proxy or when hosted together)
+let API_BASE = ""; // empty = current origin
 const chatEl = document.getElementById("chat");
 const inputEl = document.getElementById("msg");
 const sendBtn = document.getElementById("sendBtn");
@@ -22,6 +23,11 @@ if (inputEl) {
 }
 
 // ---- Helpers ----
+function scrollToBottom() {
+  if (!chatEl) return;
+  chatEl.scrollTo({ top: chatEl.scrollHeight, behavior: "smooth" });
+}
+
 function nowTime() {
   const d = new Date();
   return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -42,7 +48,7 @@ function appendMessage(role, text) {
   wrap.appendChild(meta);
   wrap.appendChild(bubble);
   chatEl.appendChild(wrap);
-  chatEl.scrollTop = chatEl.scrollHeight;
+  scrollToBottom();
 }
 
 function setLoading(isLoading) {
@@ -58,7 +64,7 @@ function showTyping(show) {
       el.className = "typing";
       el.textContent = "Agent is typing…";
       chatEl.appendChild(el);
-      chatEl.scrollTop = chatEl.scrollHeight;
+      scrollToBottom();
     }
   } else if (el) {
     el.remove();
@@ -79,7 +85,8 @@ async function send() {
   showTyping(true);
 
   try {
-    const res = await fetch(`${API_BASE}/chat`, {
+    const url = API_BASE ? `${API_BASE}/chat` : `/chat`;
+    const res = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: msg })
