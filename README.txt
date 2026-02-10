@@ -16,6 +16,11 @@ The app supports **text chat**, **voice input**, and **spoken responses**, and i
 - 🔐 API key handled via environment variables (no secrets in code)
 - 🚀 Ready for cloud deployment (e.g., Render)
 
+- 💾 Persistent chat history (saved locally in the browser)
+- 🌗 Light / Dark theme toggle with smooth transitions
+- 🧑‍🤝‍🧑 Message bubble avatars (user & agent)
+- ✨ Shimmer "typing…" indicator and subtle message animations
+
 ---
 
 ## 🧱 Project Structure
@@ -43,6 +48,9 @@ ADK_SERIES/
 4. The **FastAPI backend** uses `litellm` to call the AI model via **Groq**.
 5. The response is sent back to the frontend.
 6. The UI displays the message and optionally speaks it aloud.
+
+7. The UI persists messages in the browser (localStorage) so chat history is restored on refresh.
+8. Users can toggle Light/Dark themes; the UI applies smooth transitions and glass effects in both modes.
 
 ---
 
@@ -134,6 +142,8 @@ uvicorn app:app --host 0.0.0.0 --port 10000 --app-dir backend
 ```
 
 In production, the frontend should call the same origin (e.g., using `window.location.origin`).
+
+The chat history feature is stored in the user's browser (localStorage). This means history persists across reloads on the same device, but not across different devices unless a backend database is added.
 
 ---
 
