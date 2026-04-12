@@ -53,6 +53,7 @@ function appendMessage(role, text) {
   wrap.appendChild(bubble);
   chatEl.appendChild(wrap);
   chatEl.scrollTop = chatEl.scrollHeight;
+  return bubble;
 }
 
 function setLoading(isLoading) {
@@ -91,6 +92,9 @@ async function send() {
   setLoading(true);
   showTyping(true);
 
+  const replyBubble = appendMessage("Agent", "");
+  let fullReply = "";
+
   try {
     const res = await fetch(`${API_BASE}/chat`, {
       method: "POST",
@@ -103,13 +107,49 @@ async function send() {
       throw new Error(`HTTP ${res.status}: ${t}`);
     }
 
-    const data = await res.json();
-    const reply = data.reply || "(no reply)";
+    if (!res.body) {
+      const data = await res.json();
+      fullReply = data.reply || "(no reply)";
+      replyBubble.textContent = fullReply;
+    } else {
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let buffer = "";
 
-    messages.push({ role: "assistant", content: reply, time: Date.now() });
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
 
-    appendMessage("Agent", reply);
-    if (!isMuted) speak(reply);
+        buffer += decoder.decode(value, { stream: true });
+        const segments = buffer.split("\n\n");
+        buffer = segments.pop();
+
+        for (const segment of segments) {
+          if (!segment.trim()) continue;
+          const lines = segment.split("\n");
+          const dataLine = lines.find((line) => line.startsWith("data:"));
+          if (!dataLine) continue;
+
+          const payload = JSON.parse(dataLine.slice(5).trim());
+          if (payload.error) {
+            throw new Error(payload.error);
+          }
+
+          if (payload.reply !== undefined) {
+            fullReply += payload.reply;
+            replyBubble.textContent = fullReply;
+          }
+        }
+      }
+
+      if (!fullReply) {
+        fullReply = "(no reply)";
+        replyBubble.textContent = fullReply;
+      }
+    }
+
+    messages.push({ role: "assistant", content: fullReply, time: Date.now() });
+    if (!isMuted) speak(fullReply);
   } catch (err) {
     console.error(err);
     appendMessage("Error", "Failed to reach the server. Is the backend running?");

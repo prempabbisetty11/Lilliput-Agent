@@ -1,6 +1,8 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
+import json
 import os
 import litellm
 
@@ -25,7 +27,7 @@ class ChatResponse(BaseModel):
 def root():
     return {"status": "ok", "message": "Lilliput Agent backend is running"}
 
-@app.post("/chat", response_model=ChatResponse)
+@app.post("/chat")
 def chat(req: ChatRequest):
     user_msg = req.message
 
@@ -33,19 +35,49 @@ def chat(req: ChatRequest):
     if not os.getenv("GROQ_API_KEY"):
         raise HTTPException(status_code=500, detail="GROQ_API_KEY is not set in environment variables")
 
-    try:
-        # Call the model via litellm (Groq)
-        response = litellm.completion(
-            model=os.getenv("MODEL_NAME", "groq/llama-3.1-8b-instant"),
-            messages=[
-                {"role": "system", "content": "You are a helpful AI assistant. Answer clearly and concisely."},
-                {"role": "user", "content": user_msg},
-            ],
-            temperature=0.4,
-        )
+    model_name = os.getenv("MODEL_NAME", "groq/llama-3.1-8b-instant")
+    messages = [
+        {"role": "system", "content": "You are a helpful AI assistant. Answer clearly and concisely."},
+        {"role": "user", "content": user_msg},
+    ]
 
-        reply_text = response.choices[0].message.content
-        return {"reply": reply_text}
+    def extract_text(chunk):
+        try:
+            choice = chunk.choices[0]
+            if hasattr(choice, "delta"):
+                delta = choice.delta
+                if isinstance(delta, dict):
+                    return delta.get("content", "") or ""
+                return getattr(delta, "content", "") or ""
 
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+            if hasattr(choice, "message"):
+                message = choice.message
+                if isinstance(message, dict):
+                    return message.get("content", "") or ""
+                return getattr(message, "content", "") or ""
+
+            return getattr(choice, "text", "") or ""
+        except Exception:
+            return ""
+
+    def event_stream():
+        try:
+            completion = litellm.completion(
+                model=model_name,
+                messages=messages,
+                temperature=0.4,
+                stream=True,
+                timeout=60,
+            )
+
+            for chunk in completion:
+                text = extract_text(chunk)
+                if not text:
+                    continue
+                yield f"data: {json.dumps({'reply': text})}\n\n"
+
+            yield "event: done\ndata: {}\n\n"
+        except Exception as e:
+            yield f"event: error\ndata: {json.dumps({'error': str(e)})}\n\n"
+
+    return StreamingResponse(event_stream(), media_type="text/event-stream")
