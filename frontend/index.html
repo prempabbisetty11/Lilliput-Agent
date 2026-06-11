@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lilliput Agent — AI Workspace</title>
   <meta name="description" content="Lilliput Agent is a modern AI workspace with chat and voice features." />
+  <link rel="preconnect" href="https://lilliput-agent.onrender.com" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="theme-dark">
@@ -59,16 +60,16 @@
   <script>
     // --- Simple Chat History (localStorage) ---
     const CHAT_KEY = "lilliput_chat_history_v1";
-    const chatEl = document.getElementById("chat");
+    const chatHistoryEl = document.getElementById("chat");
 
     // Restore history on load
     document.addEventListener("DOMContentLoaded", () => {
       try {
         const saved = localStorage.getItem(CHAT_KEY);
-        if (saved && chatEl) {
-          chatEl.innerHTML = saved;
+        if (saved && chatHistoryEl) {
+          chatHistoryEl.innerHTML = saved;
           // Scroll to bottom after restore
-          chatEl.scrollTop = chatEl.scrollHeight;
+          chatHistoryEl.scrollTop = chatHistoryEl.scrollHeight;
         }
       } catch (e) {
         console.warn("Could not restore chat history", e);
@@ -76,16 +77,16 @@
     });
 
     // Observe changes to chat and persist
-    if (chatEl) {
+    if (chatHistoryEl) {
       const observer = new MutationObserver(() => {
         try {
-          localStorage.setItem(CHAT_KEY, chatEl.innerHTML);
+          localStorage.setItem(CHAT_KEY, chatHistoryEl.innerHTML);
         } catch (e) {
           console.warn("Could not save chat history", e);
         }
       });
 
-      observer.observe(chatEl, { childList: true, subtree: true, characterData: true });
+      observer.observe(chatHistoryEl, { childList: true, subtree: true, characterData: true });
     }
   </script>
 </body>

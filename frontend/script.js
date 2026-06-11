@@ -1,5 +1,6 @@
 // ---- Config ----
-let API_BASE = "https://lilliput-agent.onrender.com"; // change this to your deployed URL later
+const API_BASE = "https://lilliput-agent.onrender.com"; // change this to your deployed URL later
+const WARMUP_TIMEOUT_MS = 8000;
 const chatEl = document.getElementById("chat");
 const inputEl = document.getElementById("msg");
 const sendBtn = document.getElementById("sendBtn");
@@ -10,6 +11,7 @@ let messages = [];  // local conversation history for UI
 
 let currentUtterance = null;
 let speakSeq = 0; // increments to invalidate old speech
+let warmupPromise = null;
 
 // Auto-focus input
 if (inputEl) inputEl.focus();
@@ -24,7 +26,32 @@ if (inputEl) {
   });
 }
 
+warmBackend();
+
 // ---- Helpers ----
+function fetchWithTimeout(url, options = {}, timeoutMs = WARMUP_TIMEOUT_MS) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+  return fetch(url, {
+    ...options,
+    signal: controller.signal
+  }).finally(() => clearTimeout(timeout));
+}
+
+function warmBackend() {
+  if (warmupPromise) return warmupPromise;
+
+  warmupPromise = fetchWithTimeout(`${API_BASE}/healthz`, {
+    method: "GET",
+    cache: "no-store"
+  }).catch((err) => {
+    console.warn("Backend warm-up failed:", err);
+  });
+
+  return warmupPromise;
+}
+
 function stopSpeaking() {
   if ("speechSynthesis" in window) {
     speechSynthesis.cancel();
@@ -96,11 +123,11 @@ async function send() {
   let fullReply = "";
 
   try {
-    const res = await fetch(`${API_BASE}/chat`, {
+    const res = await fetchWithTimeout(`${API_BASE}/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: msg })
-    });
+    }, 65000);
 
     if (!res.ok) {
       const t = await res.text();
@@ -192,6 +219,8 @@ let selectedVoice = null;
 
 // Load voices and pick the best available human-like voice
 function loadVoices() {
+  if (!("speechSynthesis" in window)) return;
+
   const voices = speechSynthesis.getVoices();
 
   if (!voices || !voices.length) return;
@@ -207,8 +236,10 @@ function loadVoices() {
 }
 
 // Some browsers load voices async
-speechSynthesis.onvoiceschanged = loadVoices;
-loadVoices();
+if ("speechSynthesis" in window) {
+  speechSynthesis.onvoiceschanged = loadVoices;
+  loadVoices();
+}
 
 function speak(text) {
   if (!("speechSynthesis" in window)) return;

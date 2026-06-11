@@ -27,6 +27,10 @@ class ChatResponse(BaseModel):
 def root():
     return {"status": "ok", "message": "Lilliput Agent backend is running"}
 
+@app.get("/healthz")
+def healthz():
+    return {"status": "ok"}
+
 @app.post("/chat")
 def chat(req: ChatRequest):
     user_msg = req.message
@@ -80,4 +84,11 @@ def chat(req: ChatRequest):
         except Exception as e:
             yield f"event: error\ndata: {json.dumps({'error': str(e)})}\n\n"
 
-    return StreamingResponse(event_stream(), media_type="text/event-stream")
+    return StreamingResponse(
+        event_stream(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "X-Accel-Buffering": "no",
+        },
+    )
