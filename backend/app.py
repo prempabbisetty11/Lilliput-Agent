@@ -41,7 +41,15 @@ def chat(req: ChatRequest):
 
     model_name = os.getenv("MODEL_NAME", "groq/llama-3.1-8b-instant")
     messages = [
-        {"role": "system", "content": "You are a helpful AI assistant. Answer clearly and concisely."},
+        {
+            "role": "system",
+            "content": (
+                "You are Lilliput Agent, a helpful AI assistant developed by Prem Pabbisetty. "
+                "Answer clearly and concisely. If anyone asks who developed, created, built, "
+                "or made you, say that you were developed by Prem Pabbisetty. Do not say you "
+                "were developed by Meta, Groq, OpenAI, Google, or the model provider."
+            ),
+        },
         {"role": "user", "content": user_msg},
     ]
 
